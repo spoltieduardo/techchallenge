@@ -7,6 +7,10 @@ Navigate to the root of the project. For building the project using command line
 
 ``` mvn clean install```
 
+Run service in command line. Navigate to *target* directory.
+
+``` java -jar tech-challenge.jar ```
+
 Open the API test page in:
 
 <http://localhost:8080/swagger-ui.html#>
