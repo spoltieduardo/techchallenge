@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.validator.routines.UrlValidator;
 
 /**
  * Reading each requisition concurrently, one by one, using cache, to avoid message: "HTTP 429: Too Many Requests".
@@ -69,6 +70,19 @@ public class TechChallengeService {
 
 	public void clearAllCache() {
 		gitRepositoryInfoCache.clearAllCache();
+	}
+
+	public void isValidRepositoryUrl(String repositoryUrl) {
+		if(repositoryUrl == null) {
+			throw new RuntimeException("Repository URL is cannot be null.");
+		}
+
+		String[] schemes = {"http","https"};
+		UrlValidator urlValidator = new UrlValidator(schemes);
+
+		if (!urlValidator.isValid(repositoryUrl)) {
+			throw new RuntimeException("Repository URL is not valid.");
+		}
 	}
 
 }

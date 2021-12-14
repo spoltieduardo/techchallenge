@@ -14,17 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class TechChallengeController {
 
     @Autowired
-    private TechChallengeService sourceCodeRepositoryWebScrapingService;
+    private TechChallengeService service;
 
     @GetMapping("/scrap-repository")
     public ResponseEntity<GitRepositoryInfo> scrapRepository(@RequestParam(value = "repositoryUrl") String repositoryUrl) {
-        GitRepositoryInfo result = sourceCodeRepositoryWebScrapingService.getRepositoryUrlContentModel(repositoryUrl);
+        service.isValidRepositoryUrl(repositoryUrl);
+        GitRepositoryInfo result = service.getRepositoryUrlContentModel(repositoryUrl);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/clearAllCache")
     public ResponseEntity<String> clearAllCache(){
-        sourceCodeRepositoryWebScrapingService.clearAllCache();
+        service.clearAllCache();
         return ResponseEntity.ok("All cache was destroyed successfully !");
     }
 
@@ -33,7 +34,7 @@ public class TechChallengeController {
         if(repositoryUrl == null) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
-        sourceCodeRepositoryWebScrapingService.clearCache(repositoryUrl);
+        service.clearCache(repositoryUrl);
         return ResponseEntity.ok("Cache " + repositoryUrl + " was destroyed successfully !");
     }
 
