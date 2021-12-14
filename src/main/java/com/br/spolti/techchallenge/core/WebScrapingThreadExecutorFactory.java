@@ -19,7 +19,6 @@ public class WebScrapingThreadExecutorFactory {
 		WebScrapingThreadExecutor instance = mapWebScrapingServiceThreadExecutor.get(repositoryUrl);
 		
 		if(instance == null) {
-			
 			instance =  new WebScrapingThreadExecutor(repositoryUrl);
 		}
 		

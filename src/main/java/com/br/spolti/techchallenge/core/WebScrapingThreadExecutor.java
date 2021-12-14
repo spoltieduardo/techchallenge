@@ -5,7 +5,6 @@ import com.br.spolti.techchallenge.model.GitRepositoryInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -70,7 +69,7 @@ public class WebScrapingThreadExecutor extends Thread {
 	/**
 	 * Object model to represent data of file number of lines and file count by each file extension.
 	 */
-	private GitRepositoryInfo getRepositoryUrlContentModel(final String repositoryUrl, GitRepositoryInfo gitRepositoryInfo) throws IOException {
+	private GitRepositoryInfo getRepositoryUrlContentModel(final String repositoryUrl, GitRepositoryInfo gitRepositoryInfo) {
 		try {
 			List<HtmlLineContent> lineHtmlContentList = htmlGitHubStringContent.getContentList(repositoryUrl);
 			int fileNumberLines;
@@ -113,9 +112,7 @@ public class WebScrapingThreadExecutor extends Thread {
 		finally {
 			gitRepositoryInfo.setRepositoryUrl(repositoryUrl);
 		}
-		
 		return gitRepositoryInfo;
-
 	}
 
 }

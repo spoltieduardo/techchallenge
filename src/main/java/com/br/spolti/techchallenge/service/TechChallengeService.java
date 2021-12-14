@@ -47,7 +47,7 @@ public class TechChallengeService {
     		webScrapingThreadExecutor.setHtmlGitHubStringContent(htmlGitHubStringContent);
     		webScrapingThreadExecutor.setGroupDataByFileExtensionModelCache(gitRepositoryInfoCache);
     		
-    		 webScrapingThreadExecutor.start();
+    		webScrapingThreadExecutor.start();
 
     		synchronized(webScrapingThreadExecutor){
            		try {

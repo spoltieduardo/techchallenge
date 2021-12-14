@@ -17,8 +17,7 @@ public class TechChallengeController {
     private TechChallengeService sourceCodeRepositoryWebScrapingService;
 
     @GetMapping("/scrap-repository")
-    public ResponseEntity<GitRepositoryInfo> scrapRepository(
-            @RequestParam(value = "repositoryUrl", required = true) String repositoryUrl) {
+    public ResponseEntity<GitRepositoryInfo> scrapRepository(@RequestParam(value = "repositoryUrl") String repositoryUrl) {
         GitRepositoryInfo result = sourceCodeRepositoryWebScrapingService.getRepositoryUrlContentModel(repositoryUrl);
         return ResponseEntity.ok(result);
     }
