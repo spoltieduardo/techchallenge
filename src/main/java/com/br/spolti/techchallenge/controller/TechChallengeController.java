@@ -13,29 +13,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController(value = "/tech-challenge")
 public class TechChallengeController {
 
-    @Autowired
-    private TechChallengeService service;
+	private TechChallengeService service;
 
-    @GetMapping("/scrap-repository")
-    public ResponseEntity<GitRepositoryInfo> scrapRepository(@RequestParam(value = "repositoryUrl") String repositoryUrl) {
-        service.isValidRepositoryUrl(repositoryUrl);
-        GitRepositoryInfo result = service.getRepositoryUrlContentModel(repositoryUrl);
-        return ResponseEntity.ok(result);
-    }
+	@Autowired
+	public TechChallengeController(TechChallengeService service) {
+		this.service = service;
+	}
 
-    @PostMapping("/clearAllCache")
-    public ResponseEntity<String> clearAllCache(){
-        service.clearAllCache();
-        return ResponseEntity.ok("All cache was destroyed successfully !");
-    }
+	@GetMapping("/scrap-repository")
+	public ResponseEntity<GitRepositoryInfo> scrapRepository(@RequestParam(value = "repositoryUrl") String repositoryUrl) {
+		service.isValidRepositoryUrl(repositoryUrl);
+		GitRepositoryInfo result = service.getRepositoryUrlContentModel(repositoryUrl);
+		return ResponseEntity.ok(result);
+	}
 
-    @PostMapping("/clearCache")
-    public ResponseEntity<String> clearCache(@RequestParam(value = "repositoryUrl") String repositoryUrl){
-        if(repositoryUrl == null) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        }
-        service.clearCache(repositoryUrl);
-        return ResponseEntity.ok("Cache " + repositoryUrl + " was destroyed successfully !");
-    }
+	@PostMapping("/clearAllCache")
+	public ResponseEntity<String> clearAllCache() {
+		service.clearAllCache();
+		return ResponseEntity.ok("All cache was destroyed successfully !");
+	}
+
+	@PostMapping("/clearCache")
+	public ResponseEntity<String> clearCache(@RequestParam(value = "repositoryUrl") String repositoryUrl) {
+		if (repositoryUrl == null) {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+		}
+		service.clearCache(repositoryUrl);
+		return ResponseEntity.ok("Cache " + repositoryUrl + " was destroyed successfully !");
+	}
 
 }

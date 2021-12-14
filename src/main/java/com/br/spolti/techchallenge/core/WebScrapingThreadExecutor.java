@@ -13,15 +13,15 @@ import java.util.List;
 public class WebScrapingThreadExecutor extends Thread {
 
 	private static Logger logger = LoggerFactory.getLogger(WebScrapingThreadExecutor.class);
-	
+
 	private HtmlStringParserContentStrategy htmlGitHubStringContent;
-	
+
 	private GitRepositoryInfoCache gitRepositoryInfoCache;
 
 	private String repositoryUrl;
-	
+
 	private GitRepositoryInfo gitRepositoryInfo;
-	
+
 	public WebScrapingThreadExecutor(String repositoryUrl) {
 		this.repositoryUrl = repositoryUrl;
 	}
@@ -44,28 +44,28 @@ public class WebScrapingThreadExecutor extends Thread {
 
 	@Override
 	public void run() {
-		synchronized(this) {
-		boolean isFetchedFromCache = false;
+		synchronized (this) {
+			boolean isFetchedFromCache = false;
 
-		try {
-			gitRepositoryInfo = gitRepositoryInfoCache.getItem(repositoryUrl);
-			isFetchedFromCache = gitRepositoryInfo != null;
+			try {
+				gitRepositoryInfo = gitRepositoryInfoCache.getItem(repositoryUrl);
+				isFetchedFromCache = gitRepositoryInfo != null;
 
-			if(!isFetchedFromCache) {
-				gitRepositoryInfo = getRepositoryUrlContentModel(repositoryUrl, new GitRepositoryInfo());
+				if (!isFetchedFromCache) {
+					gitRepositoryInfo = getRepositoryUrlContentModel(repositoryUrl, new GitRepositoryInfo());
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			} finally {
+				if (!isFetchedFromCache) {
+					gitRepositoryInfoCache.addItem(repositoryUrl, gitRepositoryInfo);
+				}
+				notifyAll();
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} finally {
-			 if(!isFetchedFromCache) {
-				gitRepositoryInfoCache.addItem(repositoryUrl, gitRepositoryInfo);
-			}
-			 notifyAll();
-		}
 			logger.info(gitRepositoryInfo.toJson());
 		}
 	}
-    
+
 	/**
 	 * Object model to represent data of file number of lines and file count by each file extension.
 	 */
@@ -74,27 +74,26 @@ public class WebScrapingThreadExecutor extends Thread {
 			List<HtmlLineContent> lineHtmlContentList = htmlGitHubStringContent.getContentList(repositoryUrl);
 			int fileNumberLines;
 			String fileExtension = FileExtensionByLinkCatcher.getFileExtension(repositoryUrl);
-			
+
 			for (HtmlLineContent htmlLineContent : lineHtmlContentList) {
-				if(htmlLineContent.isDirectory()) {
+				if (htmlLineContent.isDirectory()) {
 					String href = "href=";
 					int posHref = htmlLineContent.getContent().indexOf(href);
 					int endPosHref = htmlLineContent.getContent().indexOf("</a>");
 					String macrolink = htmlLineContent.getContent().substring(posHref + 7, endPosHref - 1);
 					String linkNotTreatable = "";
-					
-					for(String s :  macrolink.split("/")) {
+
+					for (String s : macrolink.split("/")) {
 						linkNotTreatable += "/" + s;
 					}
-					
-					String linkTreatable = linkNotTreatable.substring(1, linkNotTreatable.indexOf("\">"));			
-					
+
+					String linkTreatable = linkNotTreatable.substring(1, linkNotTreatable.indexOf("\">"));
+
 					gitRepositoryInfo = getRepositoryUrlContentModel(
 							htmlGitHubStringContent.getSourceCodeRepositoryUrl() + linkTreatable,
-                            gitRepositoryInfo);
-				}
-				else {
-					if(htmlLineContent.isHasTagSearchLines()) {
+							gitRepositoryInfo);
+				} else {
+					if (htmlLineContent.isHasTagSearchLines()) {
 
 						fileNumberLines = FileLinesCatcher.getNumberLines(htmlLineContent.getContent());
 
@@ -105,11 +104,9 @@ public class WebScrapingThreadExecutor extends Thread {
 					}
 				}
 			}
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			logger.error(e.getMessage());
-		}
-		finally {
+		} finally {
 			gitRepositoryInfo.setRepositoryUrl(repositoryUrl);
 		}
 		return gitRepositoryInfo;

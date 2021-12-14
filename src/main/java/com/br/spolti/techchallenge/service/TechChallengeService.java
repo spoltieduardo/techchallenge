@@ -16,52 +16,50 @@ import org.apache.commons.validator.routines.UrlValidator;
  */
 @Service
 public class TechChallengeService {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(TechChallengeService.class);
 
-	@Autowired
 	private HtmlStringParserContentStrategy htmlGitHubStringContent;
 
-	@Autowired
 	private GitRepositoryInfoCache gitRepositoryInfoCache;
 
-	@Autowired
 	private WebScrapingThreadExecutorFactory webScrapingThreadExecutorFactory;
 
+	@Autowired
 	public TechChallengeService(HtmlStringParserContentStrategy htmlGitHubStringContent,
-								GitRepositoryInfoCache gitRepositoryInfoCache,
-								WebScrapingThreadExecutorFactory webScrapingThreadExecutorFactory) {
+															GitRepositoryInfoCache gitRepositoryInfoCache,
+															WebScrapingThreadExecutorFactory webScrapingThreadExecutorFactory) {
 		this.htmlGitHubStringContent = htmlGitHubStringContent;
 		this.gitRepositoryInfoCache = gitRepositoryInfoCache;
 		this.webScrapingThreadExecutorFactory = webScrapingThreadExecutorFactory;
 	}
 
 	public GitRepositoryInfo getRepositoryUrlContentModel(final String repositoryUrl) throws RuntimeException {
-		synchronized(this) {
-	    	GitRepositoryInfo gitRepositoryInfo = gitRepositoryInfoCache.getItem(repositoryUrl);
-	    	
-	    	if(gitRepositoryInfo != null) {
-	    		return gitRepositoryInfo;
-	    	}
+		synchronized (this) {
+			GitRepositoryInfo gitRepositoryInfo = gitRepositoryInfoCache.getItem(repositoryUrl);
 
-    		WebScrapingThreadExecutor webScrapingThreadExecutor = webScrapingThreadExecutorFactory.createNewInstanceOrReturnExistent(repositoryUrl);
-    		webScrapingThreadExecutor.setHtmlGitHubStringContent(htmlGitHubStringContent);
-    		webScrapingThreadExecutor.setGroupDataByFileExtensionModelCache(gitRepositoryInfoCache);
-    		
-    		webScrapingThreadExecutor.start();
+			if (gitRepositoryInfo != null) {
+				return gitRepositoryInfo;
+			}
 
-    		synchronized(webScrapingThreadExecutor){
-           		try {
-    				while(gitRepositoryInfoCache.getItem(repositoryUrl) == null) {
-    					webScrapingThreadExecutor.wait();
-    				}
-    			} catch (InterruptedException e) {
-    				logger.info(e.getMessage());
-    				throw new RuntimeException(e.getMessage());
-    			}
-        	}
-    		return webScrapingThreadExecutor.getGroupDataByFileExtensionModel();
-    	}
+			WebScrapingThreadExecutor webScrapingThreadExecutor = webScrapingThreadExecutorFactory.createNewInstanceOrReturnExistent(repositoryUrl);
+			webScrapingThreadExecutor.setHtmlGitHubStringContent(htmlGitHubStringContent);
+			webScrapingThreadExecutor.setGroupDataByFileExtensionModelCache(gitRepositoryInfoCache);
+
+			webScrapingThreadExecutor.start();
+
+			synchronized (webScrapingThreadExecutor) {
+				try {
+					while (gitRepositoryInfoCache.getItem(repositoryUrl) == null) {
+						webScrapingThreadExecutor.wait();
+					}
+				} catch (InterruptedException e) {
+					logger.info(e.getMessage());
+					throw new RuntimeException(e.getMessage());
+				}
+			}
+			return webScrapingThreadExecutor.getGroupDataByFileExtensionModel();
+		}
 	}
 
 	public void clearCache(String repositoryUrl) {
@@ -73,11 +71,11 @@ public class TechChallengeService {
 	}
 
 	public void isValidRepositoryUrl(String repositoryUrl) {
-		if(repositoryUrl == null) {
+		if (repositoryUrl == null) {
 			throw new RuntimeException("Repository URL is cannot be null.");
 		}
 
-		String[] schemes = {"http","https"};
+		String[] schemes = {"http", "https"};
 		UrlValidator urlValidator = new UrlValidator(schemes);
 
 		if (!urlValidator.isValid(repositoryUrl)) {

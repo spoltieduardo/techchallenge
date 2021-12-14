@@ -7,10 +7,10 @@ public class FileExtensionByLinkCatcher {
 
 	public static String getFileExtension(String link) {
 		String[] dataSplited = link.split("\\.");
-		if(dataSplited.length == 0 || link.lastIndexOf("/") > link.lastIndexOf(".")) {
+		if (dataSplited.length == 0 || link.lastIndexOf("/") > link.lastIndexOf(".")) {
 			return "";
 		}
-		return dataSplited[dataSplited.length-1];
+		return dataSplited[dataSplited.length - 1];
 	}
 
 }

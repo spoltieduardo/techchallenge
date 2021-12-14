@@ -1,4 +1,5 @@
 # Tech Challenge
+
 Project developed to solve a technical challenge for scraping GitHub repositories.
 
 ## Run the Application

@@ -12,9 +12,9 @@ import java.io.Serializable;
 public class FileInfo implements Serializable {
 
 	private static final long serialVersionUID = -5098158762721667207L;
-	
+
 	private String extension;
-	
+
 	private int lines;
 
 	private Integer numberOfFiles;
@@ -22,7 +22,7 @@ public class FileInfo implements Serializable {
 	public FileInfo(String extension) {
 		this.extension = extension;
 	}
-	
+
 	public void addFileNumberOfLines(int numberOfLines) {
 		this.lines += numberOfLines;
 		if (this.numberOfFiles == null) {

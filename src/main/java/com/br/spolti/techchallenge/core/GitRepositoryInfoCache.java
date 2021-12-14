@@ -10,11 +10,11 @@ import java.util.Map;
 public class GitRepositoryInfoCache {
 
 	private Map<String, GitRepositoryInfo> gitRepositoryInfoCache;
-	
+
 	public GitRepositoryInfoCache() {
 		gitRepositoryInfoCache = new HashMap<>();
 	}
-	
+
 	public void addItem(String repositoryUrl, GitRepositoryInfo gitRepositoryInfo) {
 		gitRepositoryInfoCache.put(repositoryUrl, gitRepositoryInfo);
 	}
@@ -26,7 +26,7 @@ public class GitRepositoryInfoCache {
 	public void clearCache(String repositoryUrl) {
 		gitRepositoryInfoCache.remove(repositoryUrl);
 	}
-	
+
 	public void clearAllCache() {
 		gitRepositoryInfoCache.clear();
 	}

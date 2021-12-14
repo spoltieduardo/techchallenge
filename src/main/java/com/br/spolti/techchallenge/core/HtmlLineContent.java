@@ -12,7 +12,7 @@ public class HtmlLineContent {
 	private boolean isDirectory;
 	boolean hasTagSearchLines;
 	boolean hasTagSearchBytes;
-	
+
 	public HtmlLineContent(String content, boolean isDirectory) {
 		this.content = content;
 		this.isDirectory = isDirectory;
@@ -23,12 +23,12 @@ public class HtmlLineContent {
 		this.hasTagSearchLines = hasTagSearchLines;
 		this.hasTagSearchBytes = hasTagSearchBytes;
 	}
-	
+
 	@Override
 	public String toString() {
-		return content + " - isDirectory = " + isDirectory + 
-						" - hasTagSearchLines = " + hasTagSearchLines + 
-						" - hasTagSearchBytes = " +hasTagSearchBytes;
+		return content + " - isDirectory = " + isDirectory +
+				" - hasTagSearchLines = " + hasTagSearchLines +
+				" - hasTagSearchBytes = " + hasTagSearchBytes;
 	}
 
 }
